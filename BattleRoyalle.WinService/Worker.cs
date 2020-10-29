@@ -100,8 +100,9 @@ namespace BattleRoyalle.WinService
                             data += item + "\n";
                         }
 
-                        mensagem.data = data;
+                        mensagem.data = data.Length > 3500 ? data.Substring(0, 3500) : data;
                         mensagem.TipoMensagem = Models.Enum.TipoMensagemEnum.MensagemResposta;
+
                         await Send(client, mensagem.ToString());                            
                     }
                     
