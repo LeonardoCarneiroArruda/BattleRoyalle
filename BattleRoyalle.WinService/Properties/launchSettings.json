@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "BattleRoyalle.WinService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

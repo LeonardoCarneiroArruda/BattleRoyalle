@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-BattleRoyalle.WinService-14372BAA-7540-4F8D-9676-93F967BE64D1</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.6" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.3" />
+    <PackageReference Include="System.Management" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BattleRoyalle.Models\BattleRoyalle.Models.csproj" />
+  </ItemGroup>
+</Project>

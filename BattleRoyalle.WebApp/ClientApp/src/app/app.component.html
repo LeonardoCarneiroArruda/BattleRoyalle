@@ -1,0 +1,53 @@
+<body>
+  <app-nav-menu></app-nav-menu>
+  <div class="container">
+    <!--<router-outlet></router-outlet>-->
+
+    <input type=text #textoComando id="textInput" placeholder="Digite algum comando" />
+    <button id="sendButton" (click)="enviarComando(textoComando.value);" >Enviar</button>
+    <div class="row">
+
+      <ul id="mensagens">
+        <li *ngFor="let msg of retornoTexto">
+          {{msg}}
+        </li>
+      </ul>
+
+      <ul id="maquinas">
+        <li *ngFor="let reg of retornoRegistros">
+          {{reg.Nome_Maquina}}
+          IP: {{reg.IP}} <br />
+          Versão do Windows:
+          <ul>
+            <li>
+              {{reg.Versao_Windows}}
+            </li>
+          </ul>
+          Versão do .Net: {{reg.Versao_DotNet}} <br />
+          Antivírus: {{reg.AntiVirus}} <br />
+          Firewall: <br />
+          <ul>
+            <li *ngFor="let item of reg.Firewall">
+              {{ item }}
+            </li>
+          </ul>
+
+          Discos:
+          <ul>
+            <li *ngFor="let disco of reg.Discos">
+              <ul>
+                Nome Disco: {{disco.Nome_Disco}}
+                <li>Memoria Disponivel: {{disco.Memoria_Disponivel}}</li>
+                <li>Memoria Total: {{disco.Memoria_Total}}</li>
+                <li>Memoria Utilizada: {{disco.Memoria_Utilizada}}</li>
+              </ul>
+            </li>
+          </ul>
+
+        </li>
+
+      </ul>
+    </div>
+
+  </div>
+</body>
