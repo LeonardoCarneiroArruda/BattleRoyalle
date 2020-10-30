@@ -3,15 +3,7 @@
   <div class="container">
     <!--<router-outlet></router-outlet>-->
 
-    <input type=text #textoComando id="textInput" placeholder="Digite algum comando" />
-    <button id="sendButton" (click)="enviarComando(textoComando.value);" >Enviar</button>
-    <div class="row">
-
-      <ul id="mensagens">
-        <li *ngFor="let msg of retornoTexto">
-          {{msg}}
-        </li>
-      </ul>
+    <div class="col" style="font-size:15px">
 
       <ul id="maquinas">
         <li *ngFor="let reg of retornoRegistros">
@@ -47,6 +39,27 @@
         </li>
 
       </ul>
+    </div>
+
+    <form>
+      <div class="form-group col col-lg-5">
+        <input type=text class="form-control" #textoComando id="textInput" placeholder="Digite algum comando" />
+
+        <button id="sendButton" class="btn btn-primary" (click)="enviarComando(textoComando.value);">Enviar</button>
+      </div>
+    </form>
+
+    <div class="row">
+      <div class="col">
+
+        <ul id="mensagens">
+          <li *ngFor="let msg of retornoTexto">
+            {{msg}}
+          </li>
+        </ul>
+      </div>
+
+
     </div>
 
   </div>
