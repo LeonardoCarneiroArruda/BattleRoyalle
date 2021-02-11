@@ -1,4 +1,4 @@
-![](https://lh3.googleusercontent.com/-SjJCP2AntwI/XoYRxI-hBjI/AAAAAAAABA4/bFi0th7AKGgQFVIOB8L-GiWSZriYhI6MgCK8BGAsYHg/s0/2020-04-02.png)
+
 
 # Desafio
 A empresa Battle Royalle Solutions está com a demanda para controlar máquinas Windows remotamente usando CLI.
