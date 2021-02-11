@@ -13,24 +13,24 @@ using System.Text;
 
 namespace BattleRoyalle.WinService.Services
 {
-    public class RegistroService : IInfoSegurancaService, IInfoMaquinaService
+    public class RegistroService : IInfoMaquina
     {
 
         public RegistroModel RegistrarInformacoesMaquina()
         {
             RegistroModel registro = new RegistroModel();
-            registro.Nome_Maquina = retornarNomeMaquina();
-            registro.Versao_Windows = retornarVersaoSO();
-            registro.Versao_DotNet = retornarVersaoDotNet();
-            registro.IP = retornarIPMaquinaLocal();
-            registro.Discos = retornarInformacoesDisco();
-            registro.AntiVirus = retornarAntiVirus();
-            registro.Firewall = retornarFirewall();
+            registro.Nome_Maquina = RetornarNomeMaquina();
+            registro.Versao_Windows = RetornarVersaoSO();
+            registro.Versao_DotNet = RetornarVersaoDotNet();
+            registro.IP = RetornarIPMaquinaLocal();
+            registro.Discos = RetornarInformacoesDisco().ToList();
+            registro.AntiVirus = RetornarAntiVirus();
+            registro.Firewall = RetornarFirewall().ToList();
 
             return registro;
         }
 
-        public string retornarAntiVirus()
+        public string RetornarAntiVirus()
         {
             int majorCodeWindowsXP = 5;
             string wmiNamespace = Environment.OSVersion.Version.Major > majorCodeWindowsXP
@@ -53,7 +53,7 @@ namespace BattleRoyalle.WinService.Services
             return antivirus;
         }
 
-        public List<string> retornarFirewall()
+        public ICollection<string> RetornarFirewall()
         {
             List<string> firewallStatusList = new List<string>();
 
@@ -75,13 +75,13 @@ namespace BattleRoyalle.WinService.Services
 
         }
 
-        public string retornarNomeMaquina() => Environment.MachineName;
+        public string RetornarNomeMaquina() => Environment.MachineName;
 
-        public string retornarVersaoDotNet() => Environment.Version.ToString();
+        public string RetornarVersaoDotNet() => Environment.Version.ToString();
 
-        public string retornarVersaoSO() => Environment.OSVersion.VersionString;
+        public string RetornarVersaoSO() => Environment.OSVersion.VersionString;
 
-        public List<Disco_RigidoModel> retornarInformacoesDisco()
+        public ICollection<Disco_RigidoModel> RetornarInformacoesDisco()
         {
             List<Disco_RigidoModel> lista = new List<Disco_RigidoModel>();
             foreach (DriveInfo drive in DriveInfo.GetDrives())
@@ -98,7 +98,7 @@ namespace BattleRoyalle.WinService.Services
             return lista;
         }
 
-        public string retornarIPMaquinaLocal()
+        public string RetornarIPMaquinaLocal()
             => Dns.GetHostEntry(Dns.GetHostName()).AddressList
                .Where(address => address.AddressFamily == AddressFamily.InterNetwork)
                .FirstOrDefault().ToString();

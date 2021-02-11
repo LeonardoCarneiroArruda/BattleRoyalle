@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BattleRoyalle.Models;
 using BattleRoyalle.Models.Domain;
+using BattleRoyalle.Models.Services;
 using BattleRoyalle.WinService.Services;
 using Microsoft.ApplicationInsights;
 using Microsoft.Extensions.Hosting;
@@ -21,7 +22,7 @@ namespace BattleRoyalle.WinService
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private static RegistroService services_registro;
+        private static IInfoMaquina services_registro;
         private static readonly string endereco = "localhost";
         private static readonly string porta = "5000";
 
