@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BattleRoyalle.Models.Interfaces;
+using BattleRoyalle.WinService.Services;
+using BattleRoyalle.WinService.Services.Handlres;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -19,6 +22,10 @@ namespace BattleRoyalle.WinService
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddTransient<IInfoMaquina, RegistroService>();
+                    services.AddTransient<IClientWebSocketSend, ClientWebSocketSend>();
+                    services.AddTransient<IControladorDeMensagemNoConsole, ControladorDeMensagemNoConsole>();
+                    
                     services.AddHostedService<Worker>();
                 });
     }

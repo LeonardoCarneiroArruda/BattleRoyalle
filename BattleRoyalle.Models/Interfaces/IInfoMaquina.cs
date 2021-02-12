@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BattleRoyalle.Models.Services
+namespace BattleRoyalle.Models.Interfaces
 {
     public interface IInfoMaquina
     {

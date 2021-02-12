@@ -1,6 +1,5 @@
-﻿using BattleRoyalle.Models;
-using BattleRoyalle.Models.Domain;
-using BattleRoyalle.Models.Services;
+﻿using BattleRoyalle.Models.Domain;
+using BattleRoyalle.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,9 +8,8 @@ using System.Management;
 using System.Management.Automation;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
-namespace BattleRoyalle.WinService.Services
+namespace BattleRoyalle.WinService.Services.Handlres
 {
     public class RegistroService : IInfoMaquina
     {

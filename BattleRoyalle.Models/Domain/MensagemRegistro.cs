@@ -15,7 +15,7 @@ namespace BattleRoyalle.Models.Domain
 
         public string RetornaMensagemParaMostrarNaTela()
         {
-            return mensagemRegistro;
+            return $">> Registrado: {mensagemRegistro}";
         }
     }
 }

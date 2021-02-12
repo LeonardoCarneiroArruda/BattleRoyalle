@@ -15,7 +15,7 @@ namespace BattleRoyalle.Models.Domain
 
         public string RetornaMensagemParaMostrarNaTela()
         {
-            return mensagemConectado;
+            return $">> {mensagemConectado}";
         }
     }
 }

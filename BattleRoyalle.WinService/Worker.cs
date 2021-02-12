@@ -1,56 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management.Automation.Runspaces;
-using System.Net.WebSockets;
-using System.ServiceModel.Dispatcher;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using BattleRoyalle.Models;
 using BattleRoyalle.Models.Domain;
-using BattleRoyalle.Models.Services;
+using BattleRoyalle.Models.Interfaces;
 using BattleRoyalle.WinService.Services;
-using Microsoft.ApplicationInsights;
+using BattleRoyalle.WinService.Services.Handlres;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BattleRoyalle.WinService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private static IInfoMaquina services_registro;
-        private static readonly string endereco = "localhost";
-        private static readonly string porta = "5000";
+        private IInfoMaquina _services_registro;
+        private IClientWebSocketSend _clientWebSocketSendMessage;
+        private IControladorDeMensagemNoConsole _controladorDeMensagemNoConsole;
 
-        public Worker(ILogger<Worker> logger)
+        private readonly string endereco = "localhost";
+        private readonly string porta = "5000";
+
+        public Worker(ILogger<Worker> logger, IInfoMaquina registroMaquina, 
+            IClientWebSocketSend clientWebSocketSendMessage, IControladorDeMensagemNoConsole controladorDeMensagemNoConsole)
         {
             _logger = logger;
-            services_registro = new RegistroService();
+            _services_registro = registroMaquina;
+            _clientWebSocketSendMessage = clientWebSocketSendMessage;
+            _controladorDeMensagemNoConsole = controladorDeMensagemNoConsole;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
             RunWebSockets().GetAwaiter().GetResult();
         }
 
-        private static async Task RunWebSockets()
+        private async Task RunWebSockets()
         {
             RegistroModel registro = new RegistroModel();
-            registro = services_registro.RegistrarInformacoesMaquina();
+            registro = _services_registro.RegistrarInformacoesMaquina();
 
             var client = new ClientWebSocket();
             await client.ConnectAsync(new Uri($"ws://{endereco}:{porta}/ws"), CancellationToken.None);
 
             MensagemModel mensagem = new MensagemModel(registro);
-            await Send(client, mensagem.ToString());
+            await _clientWebSocketSendMessage.Send(client, mensagem.ToString());
 
-            Console.WriteLine("Connected!");
-
+            Console.WriteLine(">> Connected!");
+                
             var sending = Task.Run(async () =>
             {
                 string line;
@@ -68,7 +66,7 @@ namespace BattleRoyalle.WinService
             await Task.WhenAll(sending, receiving);
         }
 
-        private static async Task Receiving(ClientWebSocket client)
+        private async Task Receiving(ClientWebSocket client)
         {
             var buffer = new byte[1024 * 4];
 
@@ -84,30 +82,13 @@ namespace BattleRoyalle.WinService
                     if (mensagem.TipoMensagem == Models.Enum.TipoMensagemEnum.MensagemConectado
                         || mensagem.TipoMensagem == Models.Enum.TipoMensagemEnum.MensagemRegistro)
                     {
-                        escreverNaTelaSeNaoForComando(mensagem);
+                        _controladorDeMensagemNoConsole.EscreverMensagemNoConsole(new MensagemNoConsoleConectadoOuRegistro(mensagem));
                     }
                     else if (mensagem.TipoMensagem == Models.Enum.TipoMensagemEnum.MensagemComando)
                     {
-
-                        List<string> retorno = new List<string>();
-
-                        try { retorno = new ComandoServices().Execute(mensagem.data); } catch (Exception ex) { };
-                        Console.WriteLine(input);
-                    
-                        string data = "";
-                        foreach (string item in retorno)
-                        {
-                            Console.WriteLine(item);
-                            data += item + "\n";
-                        }
-
-                        mensagem.data = data;
-                        mensagem.TipoMensagem = Models.Enum.TipoMensagemEnum.MensagemResposta;
-
-                        await Send(client, mensagem.ToString());                            
+                        _controladorDeMensagemNoConsole.EscreverMensagemNoConsole(new MensagemNoConsoleComandoEEnvia(mensagem, input, this._clientWebSocketSendMessage, client));
                     }
                     
-                   
                 }
                 else if (result.MessageType == WebSocketMessageType.Close)
                 {
@@ -115,28 +96,6 @@ namespace BattleRoyalle.WinService
                     break;
                 }
             }
-        }
-
-        private static async Task Send(ClientWebSocket socket, string data)
-        {
-            var bytes = Encoding.UTF8.GetBytes(data);
-            await socket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
-        }
-
-        private static void escreverNaTelaSeNaoForComando(MensagemModel mensagem)
-        {
-            IRetornoMensagem retornoMensagem = null;
-            switch (mensagem.TipoMensagem)
-            {
-                case Models.Enum.TipoMensagemEnum.MensagemConectado:
-                    retornoMensagem = new MensagemConectado(mensagem.data);
-                    break;
-                case Models.Enum.TipoMensagemEnum.MensagemRegistro:
-                    retornoMensagem = new MensagemRegistro(mensagem.registro.ToString());
-                    break;
-            }
-
-            Console.Write(mensagem.RetornaMensagemParaMostrarNaTela(retornoMensagem));
         }
 
     }

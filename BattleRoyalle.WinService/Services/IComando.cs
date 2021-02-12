@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BattleRoyalle.Models.Services
+namespace BattleRoyalle.WinService.Services
 {
     public interface IComando
     {
